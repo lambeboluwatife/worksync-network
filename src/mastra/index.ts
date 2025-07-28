@@ -22,6 +22,8 @@ const mongoVector = new MongoDBVector({
   dbName: process.env.MONGODB_DATABASE
 });
 
+const ENV = process.env.NODE_ENV || "development";
+
 export const mastra = new Mastra({
   workflows: { weatherWorkflow },
   agents: { weatherAgent },
@@ -37,5 +39,13 @@ export const mastra = new Mastra({
 
   vectors: {
     mongodb: mongoVector,
+  },
+
+  server: {
+    cors: ENV === "development" ? {
+      origin: "*",
+      allowMethods: ["*"],
+      allowHeaders: ["*"],
+    } : undefined,
   },
 });
