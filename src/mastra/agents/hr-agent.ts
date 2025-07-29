@@ -7,7 +7,6 @@ import {
   fetchAllEmployeeDataTool,
   fetchEmployeeDataTool,
   ptoTool,
-  loginAdminTool,
   recruitmentTool,
   onboardingTool,
   trainingTool,
@@ -46,7 +45,6 @@ export const hrAgent = new Agent({
     - **ptoTool**: Calculates Paid Time Off (PTO) for employees based on input queries
     - **fetchEmployeeDataTool**: Retrieves detailed data for a specific employee
     - **fetchAllEmployeeDataTool**: Returns all employee records for organizational review
-    - **loginAdminTool**: Authenticates administrative access before performing secure admin tasks
     - **sendMailTool**: Sends emails to employees or external parties for communication purposes
     - **registerEmployeeTool**: Registers new employees and coordinates with onboarding
     - **hrRAGSearchTool**: Performs semantic search and interpretation of HR policy documents using Retrieval-Augmented Generation (RAG)
@@ -76,7 +74,6 @@ export const hrAgent = new Agent({
     ptoTool,
     fetchEmployeeDataTool,
     fetchAllEmployeeDataTool,
-    loginAdminTool,
     sendMailTool,
     hrRAGSearchTool,
   },
