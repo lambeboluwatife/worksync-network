@@ -1,10 +1,13 @@
 import { Mastra } from "@mastra/core/mastra";
 import { PinoLogger } from "@mastra/loggers";
 import { LibSQLStore } from "@mastra/libsql";
-import { weatherWorkflow } from "./workflows/weather-workflow";
-import { weatherAgent } from "./agents/weather-agent";
 import { worksyncNetwork } from "./networks/HRnetwork";
 import { MongoDBVector } from "@mastra/mongodb";
+import { hrAgent } from './agents/hr-agent';
+import { financeAgent } from './agents/finance-agent';
+import { itAgent } from './agents/it-agent';
+import { basicSearchAgent } from './agents/basic-search-agent';
+import { hrRAGAgent } from "./rag/ragAgents";
 
 import * as dotenv from "dotenv";
 dotenv.config();
@@ -25,8 +28,13 @@ const mongoVector = new MongoDBVector({
 const ENV = process.env.NODE_ENV || "development";
 
 export const mastra = new Mastra({
-  workflows: { weatherWorkflow },
-  agents: { weatherAgent },
+  agents: { 
+    hr: hrAgent,
+    finance: financeAgent,
+    it: itAgent,
+    basicSearchAgent,
+    hrRAGAgent
+  },
   vnext_networks: { "worksyncNetwork": worksyncNetwork },
   storage: new LibSQLStore({
     // stores telemetry, evals, ... into memory storage, if it needs to persist, change to file:../mastra.db
@@ -49,3 +57,10 @@ export const mastra = new Mastra({
     } : undefined,
   },
 });
+
+export {
+  hrAgent,
+  financeAgent,
+  itAgent,
+};
+

@@ -11,7 +11,7 @@ import {
   trainingAgent,
   onboardingAgent,
   recruitmentAgent,
-} from "../agents/hr-agents";
+} from "../agents/hr-network-agents";
 import { hrRAGAgent } from "../rag/ragAgents";
 
 const memory = new Memory({

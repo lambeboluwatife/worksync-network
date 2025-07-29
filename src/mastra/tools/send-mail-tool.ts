@@ -4,11 +4,19 @@ import Arcade from "@arcadeai/arcadejs";
 
 const USER_ID = process.env.USER_ID;
 
-export const sendMail = async ({ toolInput }) => {
+interface SendMailInput {
+  toolInput: {
+    subject: string;
+    body: string;
+    recipient: string;
+  };
+}
+
+export const sendMail = async ({ toolInput }: SendMailInput) => {
   const client = new Arcade();
 
   const auth = await client.tools.authorize({
-    tool_name: "Google.SendEmail@1.2.1",
+    tool_name: "Gmail.SendEmail@3.0.0",
     user_id: USER_ID,
   });
 
@@ -25,7 +33,7 @@ export const sendMail = async ({ toolInput }) => {
   console.log("🚀 Authorization successful!");
 
   const result = await client.tools.execute({
-    tool_name: "Google.SendEmail@1.2.1",
+    tool_name: "Gmail.SendEmail@3.0.0",
     input: {
       starred: "true",
       subject: toolInput.subject,
@@ -62,7 +70,10 @@ export const sendMailTool = createTool({
       return { status: "Email sent successfully" };
     } catch (error) {
       console.error("Email sending failed:", error);
-      return { status: `Failed to send email`, details: error?.message || error };
+      return { 
+        status: `Failed to send email`, 
+        details: (error instanceof Error ? error.message : String(error)) 
+      };
     }
   },
 });

@@ -5,14 +5,6 @@ import {
   fetchAllEmployeesCall,
   fetchEmployeeCall,
 } from "../calls";
-import {
-  PTOAgent,
-  adminAgent,
-  performanceAgent,
-  trainingAgent,
-  onboardingAgent,
-  recruitmentAgent,
-} from "../agents/hr-sub-agents";
 import { registerEmployeeCall } from "../calls";
 
 // Register Employee Tool
@@ -54,14 +46,9 @@ export const registerEmployeeTool = createTool({
       const response = await registerEmployeeCall(name, email, jobRole, startDate);
 
       if (response.success) {
-        // Call adminAgent.generate to log/confirm registration
-        const onboardingResult = await onboardingAgent.generate(
-          `A new employee has been registered with email: ${email}. Confirm registration.`
-        );
-
         return {
           success: true,
-          message: `Employee registered successfully. onboardingAgent: ${onboardingResult.text}`,
+          message: `Employee registered successfully. Welcome, ${name}!`,
           token: response.token,
         };
       }
@@ -135,14 +122,9 @@ export const loginAdminTool = createTool({
       const response = await adminLoginCall(email, password);
 
       if (response.success) {
-        // Call adminAgent.generate to log/confirm registration
-        const adminResult = await adminAgent.generate(
-          `A new admin account has been registered with email: ${email}. Confirm registration.`
-        );
-
         return {
           success: true,
-          message: `Admin registered successfully. AdminAgent: ${adminResult.text}`,
+          message: `Admin registered successfully.`,
           token: response.token,
         };
       }
@@ -225,21 +207,15 @@ export const ptoTool = createTool({
           message =
             "No employee data found for the provided query. Please check the employee ID or provide more details.";
         } else if (response.length === 1) {
-          const ptoAgentResult = await PTOAgent.generate(
-            `Calculate PTO for the following employee data: ${JSON.stringify(response[0])}`
-          );
-          message =
-            ptoAgentResult.text || "PTO calculation completed successfully.";
+          
+          message = "PTO calculation completed successfully.";
         } else {
           message =
             "Multiple employees found for the provided query. Please refine your search.";
         }
       } else if (response && typeof response === "object") {
-        const ptoAgentResult = await PTOAgent.generate(
-          `Calculate PTO for the following employee data: ${JSON.stringify(response)}`
-        );
-        message =
-          ptoAgentResult.text || "PTO calculation completed successfully.";
+      
+        message = "PTO calculation completed successfully.";
       } else {
         message = "PTO calculation completed.";
       }
@@ -369,10 +345,6 @@ export const fetchEmployeeDataTool = createTool({
         };
       }
 
-      const agentResponse = await adminAgent.generate(
-        `Employee data fetched for: ${employeeData.employeeId} (${employeeData.name}).`
-      );
-
       return {
         success: true,
         employeeId: employeeData.employeeId,
@@ -382,7 +354,7 @@ export const fetchEmployeeDataTool = createTool({
         status: employeeData.status,
         jobRole: employeeData.jobRole,
         ptoUsed: employeeData.ptoUsed,
-        message: agentResponse.text || "Employee data fetched successfully.",
+        message: "Employee data fetched successfully.",
       };
     } catch (error) {
       return {
@@ -472,16 +444,10 @@ export const fetchAllEmployeeDataTool = createTool({
           message: "No employee data found for the provided query.",
         };
       }
-
-      const agentResponse = await adminAgent.generate(
-        `All employee data fetched. Total records: ${employeeArray.length}.`
-      );
-
       return {
         success: true,
         employees: employeeArray,
-        message:
-          agentResponse.text || "Fetched ${employeeArray.length} employee(s).",
+        message: "Fetched ${employeeArray.length} employee(s).",
       };
     } catch (error) {
       return {
@@ -493,123 +459,123 @@ export const fetchAllEmployeeDataTool = createTool({
   },
 });
 
-// Recruitment Tool
-export const recruitmentTool = createTool({
-  id: "recruitment-agent",
-  description:
-    "Handles recruitment processes including job postings, candidate screening, and interview coordination.",
-  inputSchema: z.object({
-    task: z.string().describe("The recruitment task to perform"),
-    parameters: z
-      .record(z.any())
-      .optional()
-      .describe("Additional parameters for the task"),
-  }),
-  outputSchema: z.object({
-    result: z.string().describe("Result of the recruitment operation"),
-    data: z
-      .record(z.any())
-      .optional()
-      .describe("Any additional data from the operation"),
-  }),
-  execute: async ({ context }) => {
-    const result = await recruitmentAgent.generate(
-      `Handle the following recruitment task: ${context.task}`
-    );
-    return {
-      result: result.text,
-      data: context.parameters,
-    };
-  },
-});
+// // Recruitment Tool
+// export const recruitmentTool = createTool({
+//   id: "recruitment-agent",
+//   description:
+//     "Handles recruitment processes including job postings, candidate screening, and interview coordination.",
+//   inputSchema: z.object({
+//     task: z.string().describe("The recruitment task to perform"),
+//     parameters: z
+//       .record(z.any())
+//       .optional()
+//       .describe("Additional parameters for the task"),
+//   }),
+//   outputSchema: z.object({
+//     result: z.string().describe("Result of the recruitment operation"),
+//     data: z
+//       .record(z.any())
+//       .optional()
+//       .describe("Any additional data from the operation"),
+//   }),
+//   execute: async ({ context }) => {
+//     const result = await recruitmentAgent.generate(
+//       `Handle the following recruitment task: ${context.task}`
+//     );
+//     return {
+//       result: result.text,
+//       data: context.parameters,
+//     };
+//   },
+// });
 
-// Onboarding Tool
-export const onboardingTool = createTool({
-  id: "onboarding-agent",
-  description:
-    "Manages new employee onboarding processes including documentation and orientation.",
-  inputSchema: z.object({
-    task: z.string().describe("The onboarding task to perform"),
-    parameters: z
-      .record(z.any())
-      .optional()
-      .describe("Additional parameters for the task"),
-  }),
-  outputSchema: z.object({
-    result: z.string().describe("Result of the onboarding operation"),
-    data: z
-      .record(z.any())
-      .optional()
-      .describe("Any additional data from the operation"),
-  }),
-  execute: async ({ context }) => {
-    const result = await onboardingAgent.generate(
-      `Handle the following onboarding task: ${context.task}`
-    );
-    return {
-      result: result.text,
-      data: context.parameters,
-    };
-  },
-});
+// // Onboarding Tool
+// export const onboardingTool = createTool({
+//   id: "onboarding-agent",
+//   description:
+//     "Manages new employee onboarding processes including documentation and orientation.",
+//   inputSchema: z.object({
+//     task: z.string().describe("The onboarding task to perform"),
+//     parameters: z
+//       .record(z.any())
+//       .optional()
+//       .describe("Additional parameters for the task"),
+//   }),
+//   outputSchema: z.object({
+//     result: z.string().describe("Result of the onboarding operation"),
+//     data: z
+//       .record(z.any())
+//       .optional()
+//       .describe("Any additional data from the operation"),
+//   }),
+//   execute: async ({ context }) => {
+//     const result = await onboardingAgent.generate(
+//       `Handle the following onboarding task: ${context.task}`
+//     );
+//     return {
+//       result: result.text,
+//       data: context.parameters,
+//     };
+//   },
+// });
 
-// Training Tool
-export const trainingTool = createTool({
-  id: "training-agent",
-  description:
-    "Coordinates employee training programs and development activities.",
-  inputSchema: z.object({
-    task: z.string().describe("The training task to perform"),
-    parameters: z
-      .record(z.any())
-      .optional()
-      .describe("Additional parameters for the task"),
-  }),
-  outputSchema: z.object({
-    result: z.string().describe("Result of the training operation"),
-    data: z
-      .record(z.any())
-      .optional()
-      .describe("Any additional data from the operation"),
-  }),
-  execute: async ({ context }) => {
-    const result = await trainingAgent.generate(
-      `Handle the following training task: ${context.task}`
-    );
-    return {
-      result: result.text,
-      data: context.parameters,
-    };
-  },
-});
+// // Training Tool
+// export const trainingTool = createTool({
+//   id: "training-agent",
+//   description:
+//     "Coordinates employee training programs and development activities.",
+//   inputSchema: z.object({
+//     task: z.string().describe("The training task to perform"),
+//     parameters: z
+//       .record(z.any())
+//       .optional()
+//       .describe("Additional parameters for the task"),
+//   }),
+//   outputSchema: z.object({
+//     result: z.string().describe("Result of the training operation"),
+//     data: z
+//       .record(z.any())
+//       .optional()
+//       .describe("Any additional data from the operation"),
+//   }),
+//   execute: async ({ context }) => {
+//     const result = await trainingAgent.generate(
+//       `Handle the following training task: ${context.task}`
+//     );
+//     return {
+//       result: result.text,
+//       data: context.parameters,
+//     };
+//   },
+// });
 
-// Performance Tool
-export const performanceTool = createTool({
-  id: "performance-agent",
-  description: "Manages performance reviews and employee feedback processes.",
-  inputSchema: z.object({
-    task: z.string().describe("The performance management task to perform"),
-    parameters: z
-      .record(z.any())
-      .optional()
-      .describe("Additional parameters for the task"),
-  }),
-  outputSchema: z.object({
-    result: z
-      .string()
-      .describe("Result of the performance management operation"),
-    data: z
-      .record(z.any())
-      .optional()
-      .describe("Any additional data from the operation"),
-  }),
-  execute: async ({ context }) => {
-    const result = await performanceAgent.generate(
-      `Handle the following performance management task: ${context.task}`
-    );
-    return {
-      result: result.text,
-      data: context.parameters,
-    };
-  },
-});
+// // Performance Tool
+// export const performanceTool = createTool({
+//   id: "performance-agent",
+//   description: "Manages performance reviews and employee feedback processes.",
+//   inputSchema: z.object({
+//     task: z.string().describe("The performance management task to perform"),
+//     parameters: z
+//       .record(z.any())
+//       .optional()
+//       .describe("Additional parameters for the task"),
+//   }),
+//   outputSchema: z.object({
+//     result: z
+//       .string()
+//       .describe("Result of the performance management operation"),
+//     data: z
+//       .record(z.any())
+//       .optional()
+//       .describe("Any additional data from the operation"),
+//   }),
+//   execute: async ({ context }) => {
+//     const result = await performanceAgent.generate(
+//       `Handle the following performance management task: ${context.task}`
+//     );
+//     return {
+//       result: result.text,
+//       data: context.parameters,
+//     };
+//   },
+// });
