@@ -56,7 +56,6 @@ export const hrAgent = new Agent({
     - Use the **loginAdminTool** to authenticate administrative users
     - Upon successful login, a token will be issued — **store this token securely**
     - The token remains valid for **one hour**; after this period, re-authentication is required
-    - Always verify that a valid token is present before executing any administrative or employee-specific operation
 
     === Request Handling Guidelines ===
     1. Analyze each HR-related query to determine the appropriate function
